@@ -81,5 +81,8 @@ type Pipeline interface {
 	SetFailFast(failFast bool)
 }
 
+// ParseResponse 代表用于解析HTTP响应的函数的类型。
+type ParseResponse func(httpResp *http.Response, respDepth uint32) ([]Data, []error)
+
 // ProcessItem 代表用于处理条目的函数的类型
 type ProcessItem func(item Item) (result Item, err error)

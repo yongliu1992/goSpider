@@ -50,8 +50,8 @@ func (registrar *myRegistrar) Register(module Module) (bool, error) {
 		errMsg := fmt.Sprintf("incorrect module type: %s", moduleType)
 		return false, errors.NewIllegalParameterError(errMsg)
 	}
-	registrar.rwlock.Lock()
-	defer registrar.rwlock.Unlock()
+	registrar.rwLock.Lock()
+	defer registrar.rwLock.Unlock()
 	modules := registrar.moduleTypeMap[moduleType]
 	if modules == nil {
 		modules = map[MID]Module{}
@@ -71,8 +71,8 @@ func (registrar *myRegistrar) Unregister(mid MID) (bool, error) {
 	}
 	moduleType := legalLetterTypeMap[parts[0]]
 	var deleted bool
-	registrar.rwlock.Lock()
-	defer registrar.rwlock.Unlock()
+	registrar.rwLock.Lock()
+	defer registrar.rwLock.Unlock()
 	if modules, ok := registrar.moduleTypeMap[moduleType]; ok {
 		if _, ok := modules[mid]; ok {
 			delete(modules, mid)
@@ -111,8 +111,8 @@ func (registrar *myRegistrar) GetAllByType(moduleType Type) (map[MID]Module, err
 		errMsg := fmt.Sprintf("illegal module type: %s", moduleType)
 		return nil, errors.NewIllegalParameterError(errMsg)
 	}
-	registrar.rwlock.RLock()
-	defer registrar.rwlock.RUnlock()
+	registrar.rwLock.RLock()
+	defer registrar.rwLock.RUnlock()
 	modules := registrar.moduleTypeMap[moduleType]
 	if len(modules) == 0 {
 		return nil, ErrNotFoundModuleInstance
@@ -127,8 +127,8 @@ func (registrar *myRegistrar) GetAllByType(moduleType Type) (map[MID]Module, err
 // GetAll 用于获取所有组件实例。
 func (registrar *myRegistrar) GetAll() map[MID]Module {
 	result := map[MID]Module{}
-	registrar.rwlock.RLock()
-	defer registrar.rwlock.RUnlock()
+	registrar.rwLock.RLock()
+	defer registrar.rwLock.RUnlock()
 	for _, modules := range registrar.moduleTypeMap {
 		for mid, module := range modules {
 			result[mid] = module
@@ -139,7 +139,7 @@ func (registrar *myRegistrar) GetAll() map[MID]Module {
 
 // Clear 会清除所有的组件注册记录。
 func (registrar *myRegistrar) Clear() {
-	registrar.rwlock.Lock()
-	defer registrar.rwlock.Unlock()
+	registrar.rwLock.Lock()
+	defer registrar.rwLock.Unlock()
 	registrar.moduleTypeMap = map[Type]map[MID]Module{}
 }

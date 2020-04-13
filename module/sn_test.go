@@ -26,7 +26,7 @@ func TestGenerator(t *testing.T) {
 	// 测试循环序列号生成器。
 	max = uint64(7)
 	max = uint64(101)
-	snGen = NewSNGenertor(start, max)
+	snGen = NewSNGenerator(start, max)
 	if snGen == nil {
 		t.Fatalf("Couldn't create SN generator! (start: %d, max: %d)",
 			start, max)
